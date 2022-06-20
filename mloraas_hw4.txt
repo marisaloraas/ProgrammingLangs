@@ -1,0 +1,99 @@
+;1
+(defun insert-atom-list (x L)
+   (if(null x) (error "undefined symbol x"))
+   (if(not (listp L)) (error "Parameter L is an invalid type"))
+   (if(listp x)
+		(return-from insert-atom-list (append L (list x)))
+		(return-from insert-atom-list (cons x L)))
+)
+
+
+;2
+(defun insert-special(x y z L)
+    (defvar temp nil)
+    (if(null x) (error "undefined symbol x"))
+    (if(null y) (error "undefined symbol y"))
+    (if(null z) (error "undefined symbol z"))
+    (if(not (listp L)) (error "Parameter L is an invalid type"))
+    (if(eql L nil) (return-from insert-special nil))
+	(if (eql y (car L))
+		(if (eql z (car (cdr L)))
+		    (progn (setq temp (car L))
+                    (setq L (cdr L))
+                    (setq L (cons x L))
+                    (setq L (cons temp L))
+                    (return-from insert-special L))
+		    (return-from insert-special (cons (car L) (insert-special x y z (cdr L)))))
+		(return-from insert-special (cons (car L) (insert-special x y z (cdr L)))))
+)
+
+
+;3
+(defun remove-duplicate-item(L)
+	(if(not (listp L)) (error "Parameter L is an invalid type"))
+	(if (eql L nil) (return-from remove-duplicate-item nil))
+	(if (eql (car L) (car (cdr L)))
+		(return-from remove-duplicate-item (remove-duplicate-item (cdr L)))
+		(return-from remove-duplicate-item (cons (car L) (remove-duplicate-item (cdr L)))))
+)
+
+
+;4
+(defun remove-lists(L)
+	(if(not (listp L)) (error "Parameter L is an invalid type"))
+	(if (eql L nil) (return-from remove-lists nil))
+	(if (listp (car L))
+		(return-from remove-lists (remove-lists (cdr L)))
+		(return-from remove-lists (cons (car L) (remove-lists (cdr L)))))
+)
+
+
+;5 
+(defun count-match-items(L1 L2)
+    (if(not (listp L1)) (error "Parameter L1 is an invalid type"))
+    (if(not (listp L2)) (error "Parameter L2 is an invalid type"))
+    (if (eql L1 nil) (return-from count-match-items 0))
+    (if (eql L2 nil) (return-from count-match-items 0))
+    (if (listp (car L1))
+        (if(listp (car L2))
+            (if (eql (count-match-items (car L1) (car L2)) 0)
+               (return-from count-match-items (+ 0 (count-match-items (cdr L1) (cdr L2))))
+               (return-from count-match-items (+ 1 (count-match-items (cdr L1) (cdr L2)))))))
+	(if (eql (car L1) (car L2))
+		(return-from count-match-items (+ 1 (count-match-items (cdr L1) (cdr L2))))
+		(return-from count-match-items (+ 0 (count-match-items (cdr L1) (cdr L2)))))
+)
+
+
+;6
+(defun filter(P L)
+	(if(not (listp L)) (error "Parameter L is an invalid type"))
+	(if (eql L nil) (return-from filter nil))
+	(if (funcall P (car L))
+		(return-from filter (cons (car L) (filter P (cdr L))))
+		(return-from filter (filter P (cdr L))))
+)
+
+
+
+;7
+(defun my-reverse(L)
+	(if(not (listp L)) (error "Parameter L is an invalid type"))
+	(if (eql L nil) (return-from my-reverse nil))
+	(return-from my-reverse (append (my-reverse (cdr L)) (list (car L))))
+)
+
+
+
+;8 -> Extra Credit
+(defun z-following-x(L x z)
+ 	(if(null x) (error "undefined symbol x"))
+    	(if(null z) (error "undefined symbol z"))
+	(if(not (listp L)) (error "Parameter L is an invalid type"))
+	(if (eql L nil) (return-from z-following-x "NO"))
+    (if (eql x (car L))
+        (if (eql z (car (cdr L)))
+                 (return-from z-following-x "YES"))      
+       (return-from z-following-x (z-following-x(cdr L) x z)))
+    (return-from z-following-x "NO")
+)

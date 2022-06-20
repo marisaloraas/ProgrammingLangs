@@ -1,0 +1,130 @@
+"Smalltalk Programming Assignment - Marisa Loraas"
+
+
+
+"A) Smalltalk Basic (40 pt)"
+
+"i) Declare all necessary variables"
+|a1 a2 s1 s2 s3 oddSum|
+
+"ii)Bind a1, a2 to instances of the class OrderedCollection, each of size 100 elements"
+a1 := OrderedCollection new: 100.
+a2 := OrderedCollection new: 100.
+
+"iii) Bind s1, s2, and s3 to instances of the class SortedCollection, each of size 100 elements."
+s1 := SortedCollection new: 100.
+s2 := SortedCollection new: 100.
+s3 := SortedCollection new: 100.
+
+"iv) Assign a1 to (8 1 2 3 4 5 77 99 33 10 11 22 33 44 55 66 7 2 3 4 7 8 0)"
+a1 addAll: #(8 1 2 3 4 5 77 99 33 10 11 22 33 44 55 66 7 2 3 4 7 8 0).
+
+"v)In the last 10 items of a1..."
+"a) detect odd numbers and store them in a2 (in the order you found them)"
+"b) as you are detecting them, add them up and store their summation in object oddSum"
+temp := a1 copyFrom: a1 size - 9 to: a1 size.
+"temp is a copy of the last 10 items in a1"
+oddSum := 0.
+temp do: [:item | item odd ifTrue: [
+        a2 add: item; yourself.
+        oddSum := item + oddSum.
+        ].
+    ].
+
+"vi) Sort the items in a1 (in ascending order) and place the result in s1."
+"setting the following sortBlock will allow for the items from a1 to be added in ascending order to s1"
+s1 := SortedCollection sortBlock: [:x :y | x < y].
+a1 do: [:item | s1 add: item; yourself. ].
+
+"vii) Sort the items in a1 (in descending order) and place the result in s2."
+"the sortBlock below will do the same as the sortblock before, just in decending order"
+s2 := SortedCollection sortBlock: [:x :y | x > y].
+a1 do: [:item | s2 add: item; yourself.].
+
+"viii)   Multiply the corresponding elements of s1 and s2 and sort the result in s3." 
+"the folowwing sortBlock will sort the results in s3 in ascending order"
+s3 := SortedCollection sortBlock: [:x :y | x < y].
+1 to: (a1 size) do: [:item | s3 add: (s1 at: item) * (s2 at: item).].
+
+
+"ix) Use “Transcript show:” to show the value of each variable."
+Transcript show: 'a1: '; show: a1 printString; cr.
+Transcript show: 'a2: '; show: a2 printString; cr.
+Transcript show: 's1: '; show: s1 printString; cr.
+Transcript show: 's2: '; show: s2 printString; cr.
+Transcript show: 's3: '; show: s3 printString; cr.
+Transcript show: 'oddSum:'; show: oddSum printString; cr.
+
+
+
+
+
+"B) Matrices Multiplication (60 pt)"
+"i) Declare all necessary variables"
+|A B C SUMDIAGONAL EGTH MAXC S|
+
+"ii) Initialize A (3 x 2) B (2 x 3) C (3 x 3)."
+A := #(#(0 0) #(0 0) #(0 0)).
+B := #(#(0 0 0) #(0 0 0)).
+C := (Array new: 3).
+C at: 1 put:  (Array new: 3).
+C at: 2 put:  (Array new: 3).
+C at: 3 put:  (Array new: 3).
+"iii) Initialize elements in A with [[5,5], [30,2], [14,1]] and in B with [[8,5,20], [12,15,8]]"
+A := #(#(5 5) #(30 2) #(14 1)).
+B := #(#(8 5 20) #(12 15 8)).
+
+"iv) C := AB (store the multiplication of A and B in C)."
+"at every row in C (i value), we multiply The first elemenent of the ith row in A by the first element of the ith column + the next values in each of those rows/columns, does this for every row in C (or A)"
+
+1 to: 3 do: [:i | 
+    (C at: i) at: 1 put: ((((A at: i) at: 1) * ((B at: 1) at: 1)) + (((A at: i) at: 2) * ((B at: 2) at: 1))); yourself.
+    (C at: i) at: 2 put:((((A at: i) at: 1) * ((B at: 1) at: 2)) + (((A at: i) at: 2) * ((B at: 2) at: 2))); yourself.
+    (C at: i) at: 3 put: ((((A at: i) at: 1) * ((B at: 1) at: 3)) + (((A at: i) at: 2) * ((B at: 2) at: 3))); yourself.]. 
+   
+
+"v)Add the diagonal element of C, store the result in SUMDIAGONAL."
+SUMDIAGONAL := 0.
+1 to: 3 do: [:i | SUMDIAGONAL := ((C at: i) at: i) + SUMDIAGONAL. ].
+
+"vi) Find all elements in C that are even and greater than 100 and store them in an array called EGTH."
+EGTH := OrderedCollection new: 9.
+C do: [:row | row do: [
+    :item | item even ifTrue:[
+        item > 100 ifTrue:[
+            EGTH add: item; yourself.
+            ].
+        ].
+    ].
+].
+
+"vii)Zero the diagonal elements of C."
+1 to: 3 do:[:i|
+(C at: i) at: i put: 0.
+].
+
+"viii) Convert C to be an array (OrderedCollection) with element moved from matrix C to the array C columnwise, then find the maximum element in C and call it MAXC."
+C_columns := (Array new: 9).
+temp := 0.
+C do:[ :row | row do:[
+    :item | 
+    temp := temp + 1.
+    C_columns at: temp put: item. ].
+ ].
+
+"finds max element in array"
+MAXXC := C_columns inject: 0 into: [:x :y | (x > y)  
+   ifTrue: [x]
+   ifFalse: [y]].
+   
+"ix) Move elements of C to S while being sorted in an ascending order"
+S := SortedCollection sortBlock:[:x :y | x < y].
+C do:[ :row | row do:[
+    :item | 
+    S add: item; yourself. ].
+ ].
+
+
+
+
+
